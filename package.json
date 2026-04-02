@@ -1,0 +1,12 @@
+{
+  "name": "ethscope",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "npx serve client",
+    "test": "node tests/app.test.js"
+  },
+  "dependencies": {
+    "ethers": "^6.13.0"
+  }
+}
