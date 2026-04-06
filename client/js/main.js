@@ -1,4 +1,6 @@
 import { getAccounts, fetchBalance, sendTx, fetchNetwork } from "../../lib/api.js";
+import { isValidAddress, isValidAmount } from "../../lib/validation.js";
+import { provider } from "../../lib/ethereum.js";
 
 // elements
 const senderInput = document.getElementById("sender-input");
@@ -18,6 +20,9 @@ const amountInput = document.getElementById("amount");
 
 const txHistory = document.getElementById("tx-history");
 const latestBlock = document.getElementById("latest-block");
+const connectionEl = document.getElementById("connection-status");
+const networkEl = document.getElementById("network-id");
+const rpcEl = document.getElementById("rpc-url");
 
 // data
 const accounts = getAccounts();
@@ -64,18 +69,24 @@ clearAll.addEventListener("click", () => {
 
 // helper
 function parseAddress(val) {
-  return val.includes(" - ") ? val.split(" - ")[1] : val;
+  const addr = val.includes(" - ") ? val.split(" - ")[1] : val;
+  return addr.trim().toLowerCase();
 }
 
 // balance
 balanceBtn.addEventListener("click", async () => {
   const address = parseAddress(balanceInput.value);
 
+  if (!isValidAddress(address)) {
+    balanceResult.textContent = "Invalid address";
+    return;
+  }
+
   try {
     const balance = await fetchBalance(address);
     balanceResult.textContent = `${balance} ETH`;
   } catch {
-    balanceResult.textContent = "Invalid address";
+    balanceResult.textContent = "Error";
   }
 });
 
@@ -85,7 +96,25 @@ sendBtn.addEventListener("click", async () => {
   const recipientAddress = parseAddress(recipientInput.value);
   const amount = amountInput.value;
 
-  const senderIndex = accounts.findIndex(a => a.address === senderAddress);
+  // Validation
+  if (!isValidAddress(senderAddress)) {
+    addHistory("Invalid sender address", "fail");
+    return;
+  }
+
+  if (!isValidAddress(recipientAddress)) {
+    addHistory("Invalid recipient address", "fail");
+    return;
+  }
+
+  if (!isValidAmount(amount)) {
+    addHistory("Invalid amount", "fail");
+    return;
+  }
+
+  const senderIndex = accounts.findIndex(
+  a => a.address.toLowerCase() === senderAddress.toLowerCase()
+);
 
   if (senderIndex === -1) {
     addHistory("Invalid sender", "fail");
@@ -94,18 +123,28 @@ sendBtn.addEventListener("click", async () => {
 
   try {
     const before = await fetchBalance(senderAddress);
+    const recipientBefore = await fetchBalance(recipientAddress);
 
     const hash = await sendTx(senderIndex, recipientAddress, amount);
 
-    const after = await fetchBalance(senderAddress);
+    await provider.waitForTransaction(hash);
 
-    addHistory(
-      `${amount} ETH → ${recipientAddress}`,
-      "success",
-      before,
-      after,
-      hash
-    );
+    const after = await fetchBalance(senderAddress);
+    const recipientAfter = await fetchBalance(recipientAddress);
+
+  addHistory(
+  `${amount} ETH → ${recipientAddress}`,
+  "success",
+  {
+    sender: senderAddress,
+    recipient: recipientAddress,
+    senderBefore: before,
+    senderAfter: after,
+    recipientBefore,
+    recipientAfter,
+    hash
+  }
+);
 
   } catch {
     addHistory("Transaction failed", "fail");
@@ -113,22 +152,42 @@ sendBtn.addEventListener("click", async () => {
 });
 
 // history
-function addHistory(text, status, before, after, hash) {
+function addHistory(text, status, data) {
   const li = document.createElement("li");
 
   if (status === "success") {
-    li.textContent = `✔ ${text} | ${before} → ${after} (${hash})`;
+    li.textContent =
+      `✔ ${data.sender} → ${data.recipient} | ` +
+      `S: ${Number(data.senderBefore).toFixed(6)} → ${Number(data.senderAfter).toFixed(6)} | ` +
+      `R: ${Number(data.recipientBefore).toFixed(6)} → ${Number(data.recipientAfter).toFixed(6)} | ` +
+      `(${data.hash})`;
+
+    logStatus("Transaction success");
   } else {
     li.textContent = `❌ ${text}`;
+    logStatus(text);
   }
 
   txHistory.appendChild(li);
+}
+
+// Status log
+function logStatus(msg) {
+  const log = document.getElementById("status-log");
+
+  const li = document.createElement("li");
+  li.textContent = msg;
+
+  log.appendChild(li);
 }
 
 // latest block
 async function updateBlock() {
   const data = await fetchNetwork();
   latestBlock.textContent = data.latestBlock;
+  connectionEl.textContent = "connected";
+  networkEl.textContent = `Anvil (${data.chainId})`;
+  rpcEl.textContent = "http://127.0.0.1:8545";
 }
 
 setInterval(updateBlock, 2000);

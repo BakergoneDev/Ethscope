@@ -1,12 +1,10 @@
-// ethers
-const { ethers } = window;
-
 // address
 export function isValidAddress(address) {
-  return ethers.isAddress(address);
+  return /^0x[a-fA-F0-9]{40}$/.test(address);
 }
 
 // amount
 export function isValidAmount(amount) {
-  return Number(amount) > 0;
+  const num = Number(amount);
+  return num > 0 && !isNaN(num);
 }
