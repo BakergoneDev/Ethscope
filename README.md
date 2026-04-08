@@ -1,6 +1,6 @@
 # Ethscope
 
-![Ethscope Banner](../Ethscope/assets/Ethscope%20banner.png)
+![Ethscope Banner](assets/ethscope-banner.png)
 
 Ethscope is a lightweight Ethereum dashboard built with JavaScript that connects to a local blockchain using Anvil.
 The application allows users to inspect network data, check account balances and send transactions in a simple and structured UI.
@@ -157,27 +157,27 @@ The application has been tested for accessibility and performance.
 ### Lighthouse 
 
 Dark mode
-![img](../Ethscope/assets/Lighthouse%20Dark%20mode.png)
+![img](assets/Lighthouse-Dark-mode.png)
 ---
 Light mode
-![img](../Ethscope/assets/Lighthouse%20Light%20mode.png)
+![img](assets/Lighthouse-Light-mode.png)
 ---
 Mobile 
-![img](../Ethscope/assets/Lighthouse%20Mobile.png)
+![img](assets/Lighthouse-Mobile.png)
 
 
 ---
 
 ### Mozilla Accessibility (a11y)
 
-![img](../Ethscope/assets/Modzilla%20A11y.png)
+![img](assets/Modzilla-A11y.png)
 
 
 ---
 
 ### HTML Validation
 
-![img](../Ethscope/assets/HTML%20Validator.png)
+![img](assets/HTML-Validator.png) 
 
 
 ---
