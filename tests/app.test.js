@@ -1,31 +1,38 @@
+import { test } from "node:test";
+import assert from "node:assert";
 import { isValidAddress, isValidAmount } from "../client/lib/validation.js";
 
-function assert(condition, message) {
-  if (!condition) {
-    throw new Error(message);
-  }
-}
-
-// tests
-try {
-  console.log("Running tests...");
-
-  // valid address
-  assert(
-    isValidAddress("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"),
-    "Valid address failed"
+test("valid address", () => {
+  assert.equal(
+    isValidAddress("0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"),
+    true
   );
+});
 
-  // invalid address
-  assert(!isValidAddress("abc"), "Invalid address passed");
+test("invalid address", () => {
+  assert.equal(isValidAddress("abc"), false);
+});
 
-  // valid amount
-  assert(isValidAmount("1"), "Valid amount failed");
+test("valid amount", () => {
+  assert.equal(isValidAmount("1"), true);
+});
 
-  // invalid amount
-  assert(!isValidAmount("0"), "Invalid amount passed");
+test("invalid amount zero", () => {
+  assert.equal(isValidAmount("0"), false);
+});
 
-  console.log("✅ All tests passed");
-} catch (err) {
-  console.error("❌ Test failed:", err.message);
-}
+test("invalid amount negative", () => {
+  assert.equal(isValidAmount("-1"), false);
+});
+
+test("address wrong length", () => {
+  assert.equal(isValidAddress("0x123"), false);
+});
+
+test("amount with spaces", () => {
+  assert.equal(isValidAmount(" 5 "), true);
+});
+
+test("amount text fails", () => {
+  assert.equal(isValidAmount("abc"), false);
+});

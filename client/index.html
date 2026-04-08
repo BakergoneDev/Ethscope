@@ -1,86 +1,129 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Ethereum dashboard running on Anvil" />
-  <meta name="color-scheme" content="light dark" />
-  <title>Ethscope Dashboard</title>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Ethereum dashboard running on Anvil">
+    <meta name="color-scheme" content="light dark">
+    <title>Ethscope Dashboard</title>
 
-  <link rel="stylesheet" href="./css/main.css" />
-</head>
-<body>
-  <a href="#main-content" class="skip-link">Skip to content</a>
+    <link rel="stylesheet" href="./css/main.css">
+  </head>
 
-  <header>
-    <h1>Ethscope</h1>
-    <button id="theme-toggle" type="button">Toggle theme</button>
-  </header>
+  <body>
+    <a href="#main-content" class="skip-link">Skip to content</a>
 
-  <main id="main-content">
-    <section aria-labelledby="network-heading">
-      <h2 id="network-heading">Network info</h2>
-      <p>Connection: <span id="connection-status">-</span></p>
-      <p>Network: <span id="network-id">-</span></p>
-      <p>RPC URL: <span id="rpc-url">-</span></p>
-      <p>Latest block: <span id="latest-block">-</span></p>
-    </section>
+    <header class="header">
+      <h1 class="logo">Ethscope</h1>
+      <button id="theme-toggle" type="button" aria-label="Toggle dark mode">
+        🌙
+      </button>
+    </header>
 
-    <section aria-labelledby="balance-heading">
-      <h2 id="balance-heading">Check balance</h2>
+    <main id="main-content" class="app">
+      <div class="grid">
 
-      <label>Account</label>
-      <select id="balance-account"></select>
+        <section class="card" aria-labelledby="network-heading">
+          <h2 id="network-heading">Network info</h2>
 
-      <input id="balance-input" list="accounts-list" placeholder="Address" />
-      <button id="clear-balance">X</button>
+          <div class="info-row">
+            <span class="info-label">Connection</span>
+            <span id="connection-status" class="info-value">-</span>
+          </div>
 
-      
+          <div class="info-row">
+            <span class="info-label">Network</span>
+            <span id="network-id" class="info-value">-</span>
+          </div>
 
-      <button id="get-balance-btn" type="button">Get balance</button>
+          <div class="info-row">
+            <span class="info-label">RPC URL</span>
+            <span id="rpc-url" class="info-value">-</span>
+          </div>
 
-      <p>Balance: <span id="balance-result">-</span></p>
-      <p id="balance-error"></p>
-    </section>
+          <div class="info-row">
+            <span class="info-label">Latest block</span>
+            <span id="latest-block" class="info-value">-</span>
+          </div>
+        </section>
 
-    <section aria-labelledby="send-heading">
-      <h2 id="send-heading">Send transaction</h2>
+        <section class="card" aria-labelledby="balance-heading">
+          <h2 id="balance-heading">Check balance</h2>
 
-      <label>Sender</label>
-      <input id="sender-input" list="accounts-list" placeholder="Address" />
-      <button id="clear-sender">X</button>
+          <label for="balance-input">Account address</label>
 
-      <label>Recipient</label>
-      <input id="recipient-input" list="accounts-list" placeholder="Address" />
-      <button id="clear-recipient">X</button>
+          <div class="input-group">
+            <input
+              id="balance-input"
+              list="accounts-list"
+              placeholder="Address"
+            >
+            <button id="clear-balance" type="button">X</button>
+          </div>
 
-      <label for="amount">Amount (ETH)</label>
-      <input id="amount" type="number" />
+          <button id="get-balance-btn" type="button">
+            Get balance
+          </button>
 
-      <button id="send-btn" type="button">Send</button>
+          <p>Balance: <span id="balance-result">-</span></p>
+          <p id="balance-error"></p>
+        </section>
 
-      <p id="send-status"></p>
-    </section>
+        <section class="card wide" aria-labelledby="send-heading">
+          <h2 id="send-heading">Send transaction</h2>
 
-    <section aria-labelledby="history-heading">
-      <h2 id="history-heading">Transaction history</h2>
-      <ul id="tx-history"></ul>
-    </section>
+          <label for="sender-input">Sender</label>
+          <div class="input-group">
+            <input
+              id="sender-input"
+              list="accounts-list"
+              placeholder="Address"
+            >
+            <button id="clear-sender" type="button">X</button>
+          </div>
 
-    <section aria-labelledby="log-heading">
-      <h2 id="log-heading">Status log</h2>
-      <ul id="status-log"></ul>
-    </section>
-     <button id="clear-all">Clear data</button>
-  </main>
+          <label for="recipient-input">Recipient</label>
+          <div class="input-group">
+            <input
+              id="recipient-input"
+              list="accounts-list"
+              placeholder="Address"
+            >
+            <button id="clear-recipient" type="button">X</button>
+          </div>
 
-  <datalist id="accounts-list"></datalist>
+          <label for="amount">Amount (ETH)</label>
+          <input id="amount" type="number">
 
-  <footer>
-    <p>Ethscope 2026</p>
-  </footer>
+          <button id="send-btn" type="button">Send</button>
 
-  <script src="https://cdn.jsdelivr.net/npm/ethers@6/dist/ethers.umd.min.js"></script>
-  <script type="module" src="./js/main.js"></script>
-</body>
+          <p id="send-status"></p>
+        </section>
+
+        <section class="card" aria-labelledby="history-heading">
+          <h2 id="history-heading">Transaction history</h2>
+          <ul id="tx-history"></ul>
+          <p id="history-empty" class="empty-state">
+            No transactions yet
+          </p>
+        </section>
+
+        <section class="card wide" aria-labelledby="log-heading">
+          <h2 id="log-heading">Status log</h2>
+          <ul id="status-log"></ul>
+        </section>
+
+      </div>
+    </main>
+
+    <datalist id="accounts-list"></datalist>
+
+    <footer>
+      <button id="clear-all">Clear data</button>
+      <p>Ethscope 2026</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/ethers@6/dist/ethers.umd.min.js" defer></script>
+    <script type="module" src="./js/main.js" defer></script>
+  </body>
 </html>

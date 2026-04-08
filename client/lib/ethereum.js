@@ -1,11 +1,9 @@
-// provider
 const { ethers } = window;
 
 const RPC_URL = "http://127.0.0.1:8545";
 
 export const provider = new ethers.JsonRpcProvider(RPC_URL);
 
-// accounts
 export const accounts = [
   {
     address: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
@@ -49,7 +47,7 @@ export const accounts = [
   }
 ];
 
-// wallet
+
 export function getWallet(privateKey) {
   return new ethers.Wallet(privateKey, provider);
 }
