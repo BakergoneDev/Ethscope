@@ -1,6 +1,6 @@
 # Ethscope
 
-![img](assets/ethscope-banner.png)
+![img](assets/Ethscope-banner.png)
 
 Ethscope is a lightweight Ethereum dashboard built with JavaScript that connects to a local blockchain using Anvil.
 The application allows users to inspect network data, check account balances and send transactions in a simple and structured UI.
